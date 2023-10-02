@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Testing Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #007bff;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            background-color: #f5f5f5;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            margin-top: 0;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        pre {
+            background-color: #fff;
+            padding: 10px;
+            border: 1px solid #ccc;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>API Testing Tool</h1>
+    </header>
+
+    <div class="container">
+        <h2>API Request</h2>
+        <label for="apiUrl">API URL:</label>
+        <input type="text" id="apiUrl" placeholder="Enter API URL">
+        <label for="requestMethod">Request Method:</label>
+        <select id="requestMethod">
+            <option value="GET">GET</option>
+            <option value="POST">POST</option>
+            <option value="PUT">PUT</option>
+            <option value="DELETE">DELETE</option>
+        </select>
+        <label for="requestHeaders">Request Headers:</label>
+        <input type="text" id="requestHeaders" placeholder="Enter headers (optional)">
+        <label for="requestBody">Request Body:</label>
+        <textarea id="requestBody" rows="4" placeholder="Enter request body (optional)"></textarea>
+        <button onclick="sendRequest()">Send Request</button>
+
+        <h2>API Response</h2>
+        <pre id="response"></pre>
+    </div>
+
+    <script>
+        function sendRequest() {
+            const apiUrl = document.getElementById("apiUrl").value;
+            const requestMethod = document.getElementById("requestMethod").value;
+            const requestHeaders = document.getElementById("requestHeaders").value;
+            const requestBody = document.getElementById("requestBody").value;
+
+            const headers = new Headers();
+            if (requestHeaders) {
+                const headerLines = requestHeaders.split('\n');
+                headerLines.forEach(line => {
+                    const [key, value] = line.split(':');
+                    if (key && value) {
+                        headers.append(key.trim(), value.trim());
+                    }
+                });
+            }
+
+            const requestOptions = {
+                method: requestMethod,
+                headers: headers,
+                body: requestBody,
+            };
+
+            fetch(apiUrl, requestOptions)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("response").textContent = JSON.stringify(data, null, 2);
+                })
+                .catch(error => {
+                    document.getElementById("response").textContent = "Error: " + error.message;
+                });
+        }
+    </script>
+</body>
+</html>
